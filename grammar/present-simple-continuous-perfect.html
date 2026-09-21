@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Present Simple, Continuous, Perfect – Ćwiczenia interaktywne</title>
+<style>
+  :root {
+    --accent: #ee4352;
+    --blue:   #1e5aae;
+    --ink:    #16181d;
+    --paper:  #fbfaf8;
+    --tint:   #e9f0fa;
+    --line:   #e8e6e1;
+    --muted:  #67707e;
+    --green:  #1f9254;
+    --green-bg: #eafaf0;
+    --red-bg: #fdecec;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 24px 18px 60px; }
+  header.top { text-align: center; margin-bottom: 28px; }
+  .topbar { height: 6px; background: linear-gradient(90deg, var(--blue) 0%, var(--accent) 100%); border-radius: 6px; margin-bottom: 20px; }
+  h1 { font-size: 1.5rem; margin: 0 0 6px; }
+  .subtitle { color: var(--muted); font-size: 0.95rem; margin: 0; }
+  .intro-note {
+    background: var(--tint); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 16px; margin-top: 18px; font-size: 0.9rem; color: var(--ink);
+  }
+  section.exercise {
+    background: #fff; border: 1px solid var(--line); border-radius: 16px;
+    padding: 22px 22px 18px; margin-bottom: 26px; box-shadow: 0 6px 20px rgba(22,24,29,.05);
+  }
+  .ex-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+  .ex-head h2 { font-size: 1.15rem; margin: 0; }
+  .score { font-size: 0.85rem; font-weight: 600; color: var(--blue); background: var(--tint); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+  .ex-instructions { color: var(--muted); font-size: 0.9rem; margin: 0 0 14px; }
+  ol.gap-list, ol.mc-list, ol.tr-list { list-style: none; margin: 0; padding: 0; }
+  li.gap-item, li.mc-item, li.tr-item {
+    padding: 12px 0; border-top: 1px solid var(--line);
+  }
+  li.gap-item:first-child, li.mc-item:first-child, li.tr-item:first-child { border-top: none; }
+  .num { color: var(--muted); font-weight: 600; margin-right: 4px; }
+  .sentence { font-size: 1rem; }
+  .gapblock { display: inline-flex; align-items: center; gap: 4px; margin: 0 3px; }
+  input.gap-input {
+    border: 1.5px solid var(--line); border-radius: 8px; padding: 4px 8px;
+    font-size: 0.98rem; font-family: inherit; min-width: 110px;
+    background: #fff; color: var(--ink);
+  }
+  input.gap-input:focus { outline: none; border-color: var(--blue); }
+  input.gap-input.input-ok { border-color: var(--green); background: var(--green-bg); }
+  input.gap-input.input-bad { border-color: var(--accent); background: var(--red-bg); }
+  .hint { color: var(--muted); font-size: 0.88rem; white-space: nowrap; }
+  .btn-check, .btn-checkall, .btn-reveal {
+    border: none; border-radius: 8px; padding: 6px 14px; font-size: 0.88rem;
+    font-weight: 600; cursor: pointer; margin-left: 8px;
+  }
+  .btn-check { background: var(--tint); color: var(--blue); }
+  .btn-check:hover { background: #dcebfa; }
+  .btn-checkall { background: var(--blue); color: #fff; }
+  .btn-checkall:hover { opacity: 0.9; }
+  .feedback { margin-top: 6px; font-size: 0.9rem; min-height: 1.2em; }
+  .fb-ok { color: var(--green); font-weight: 600; }
+  .fb-bad { color: var(--accent); }
+  .ex-footer { display: flex; justify-content: flex-end; margin-top: 14px; }
+  .mc-prefix, .mc-suffix { font-size: 1rem; }
+  .mc-options { display: inline-flex; gap: 8px; margin: 4px 6px; flex-wrap: wrap; }
+  button.mc-opt {
+    border: 1.5px solid var(--line); background: #fff; border-radius: 8px;
+    padding: 5px 12px; font-size: 0.92rem; font-family: inherit; cursor: pointer; color: var(--ink);
+  }
+  button.mc-opt:hover:not(.mc-disabled) { border-color: var(--blue); }
+  button.mc-opt.mc-disabled { cursor: default; }
+  button.mc-opt.mc-correct { border-color: var(--green); background: var(--green-bg); color: var(--green); font-weight: 600; }
+  button.mc-opt.mc-wrong { border-color: var(--accent); background: var(--red-bg); color: var(--accent); text-decoration: line-through; }
+  li.tr-item .pl-text { font-size: 1rem; font-weight: 500; display: block; margin-bottom: 6px; }
+  input.tr-input {
+    width: 100%; border: 1.5px solid var(--line); border-radius: 8px; padding: 7px 10px;
+    font-size: 0.96rem; font-family: inherit; margin-bottom: 6px;
+  }
+  input.tr-input:focus { outline: none; border-color: var(--blue); }
+  .reveal { display: none; background: var(--tint); border-radius: 8px; padding: 8px 12px; font-size: 0.92rem; }
+  .reveal.shown { display: block; }
+  .reveal .model { font-weight: 600; color: var(--blue); }
+  .reveal .caveat { display: block; margin-top: 4px; color: var(--muted); font-size: 0.82rem; }
+  footer.done { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 10px; }
+  @media (max-width: 480px) {
+    .wrap { padding: 16px 12px 40px; }
+    input.gap-input { min-width: 90px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="topbar"></div>
+    <h1>Present Simple, Present Continuous, Present Perfect</h1>
+    <p class="subtitle">Ćwiczenia interaktywne — wpisz odpowiedź i sprawdź od razu</p>
+    <p class="intro-note">Wpisuj odpowiedzi w luki i klikaj <b>Sprawdź</b> (albo <b>Sprawdź całe ćwiczenie</b> na dole sekcji). Drobne literówki i wielkość liter nie mają znaczenia, a formy skrócone (np. <i>doesn't</i>) i pełne (<i>does not</i>) są traktowane tak samo.</p>
+  </header>
+
+  <section class="exercise" id="ex1">
+    <div class="ex-head"><h2>Ex. 1 — uzupełnij lukę</h2><span class="score" id="ex1-score">0/20 poprawnych</span></div>
+    <p class="ex-instructions">Complete the sentences with the correct form of the verb given in brackets (Present Simple, Present Continuous or Present Perfect).</p>
+    <div id="ex1-list"></div>
+    <div class="ex-footer"><button type="button" class="btn-checkall" data-checkall="ex1">Sprawdź całe ćwiczenie</button></div>
+  </section>
+
+  <section class="exercise" id="ex2">
+    <div class="ex-head"><h2>Ex. 2 — wybierz opcję</h2><span class="score" id="ex2-score">0/15 poprawnych</span></div>
+    <p class="ex-instructions">Choose the correct option. Kliknij jedną z dwóch opcji.</p>
+    <div id="ex2-list"></div>
+  </section>
+
+  <section class="exercise" id="ex3">
+    <div class="ex-head"><h2>Ex. 3 — uzupełnij lukę</h2><span class="score" id="ex3-score">0/20 poprawnych</span></div>
+    <p class="ex-instructions">Put the verb into the correct form (Present Simple, Present Continuous or Present Perfect).</p>
+    <div id="ex3-list"></div>
+    <div class="ex-footer"><button type="button" class="btn-checkall" data-checkall="ex3">Sprawdź całe ćwiczenie</button></div>
+  </section>
+
+  <section class="exercise" id="ex4">
+    <div class="ex-head"><h2>Ex. 4 — tłumaczenie</h2></div>
+    <p class="ex-instructions">Translate the sentences into English, a potem kliknij „Pokaż tłumaczenie", żeby porównać z przykładową wersją (to zadanie nie jest oceniane automatycznie — możliwe są inne poprawne tłumaczenia).</p>
+    <div id="ex4-list"></div>
+  </section>
+
+  <footer class="done">Present Simple, Present Continuous, Present Perfect – Ćwiczenia · dla Nadii K.</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- dane: Ex. 1 ----------
+  var EX1 = [
+    { text: "Simon [gap](play) volleyball with his friends in the park right now.", answers: ["is playing"] },
+    { text: "We [gap](seldom / go) to the theatre.", answers: ["seldom go"] },
+    { text: "[gap](Adam / sometimes / watch) romantic comedies?", answers: ["Does Adam sometimes watch"] },
+    { text: "My grandma [gap](just / bake) cheesecake. Would you like some?", answers: ["has just baked"] },
+    { text: "[gap](you / wash) the dishes yet?", answers: ["Have you washed"] },
+    { text: "What [gap](you / cook) in the kitchen now?", answers: ["are you cooking"] },
+    { text: "Jessica and Luke [gap](argue) at the moment. I can hear them.", answers: ["are arguing"] },
+    { text: "How often [gap](Olivia / take) her dog for a walk?", answers: ["does Olivia take"] },
+    { text: "I [gap](run) ten kilometres and I'm exhausted.", answers: ["have run"] },
+    { text: "What kind of job [gap](Mark / look for)?", answers: ["is Mark looking for"] },
+    { text: "Chris [gap](sleep) on the sofa in the living room. Please be quiet and don't wake him up.", answers: ["is sleeping"] },
+    { text: "[gap](you / ever / fall) in love?", answers: ["Have you ever fallen"] },
+    { text: "What [gap](your brother / do)? What's his occupation?", answers: ["does your brother do"] },
+    { text: "My little sister [gap](draw) something on the wall in the living room.", answers: ["is drawing"] },
+    { text: "We should go home because it [gap](get) dark.", answers: ["is getting"] },
+    { text: "[gap](Lucy / always / take) photos on holiday?", answers: ["Does Lucy always take"] },
+    { text: "I [gap](try) to work. Stop making such noise!", answers: ["am trying"] },
+    { text: "We [gap](never / be) to this palace before.", answers: ["have never been"] },
+    { text: "Thomas [gap](not / speak) Italian although his close friend is Italian.", answers: ["doesn't speak"] },
+    { text: "How often [gap](you / go out) with your friends?", answers: ["do you go out"] }
+  ];
+
+  // ---------- dane: Ex. 2 (multiple choice) ----------
+  var EX2 = [
+    { prefix: "I've heard that Brian", options: ["is dislocating", "has dislocated"], correct: 1, suffix: "his wrist." },
+    { prefix: "My sister", options: ["just calls", "has just called"], correct: 1, suffix: "me." },
+    { prefix: "How long", options: ["do you know", "have you known"], correct: 1, suffix: "your best friend?" },
+    { prefix: "We", options: ["sit", "are sitting"], correct: 1, suffix: "on the balcony now." },
+    { prefix: "I", options: ["leave", "am leaving"], correct: 1, suffix: "for Rome next Monday." },
+    { prefix: "We", options: ["are having", "have had"], correct: 0, suffix: "supper right now. Would you like to join us?" },
+    { prefix: "", options: ["Does Matthew always watch", "Is Matthew always watching"], correct: 0, suffix: "TV in the evening?" },
+    { prefix: "", options: ["Do you take", "Have you taken"], correct: 1, suffix: "your dog for a walk yet?" },
+    { prefix: "Look! It's Miranda! Why", options: ["does she run", "is she running"], correct: 1, suffix: "so fast?" },
+    { prefix: "They", options: ["aren't paying", "haven't paid"], correct: 1, suffix: "for dinner yet." },
+    { prefix: "Their children", options: ["always drink", "are always drinking"], correct: 0, suffix: "hot cocoa in the morning." },
+    { prefix: "David", options: ["sometimes finishes", "has sometimes finished"], correct: 0, suffix: "his homework on time." },
+    { prefix: "How often", options: ["does he go", "has he gone"], correct: 0, suffix: "to the doctor?" },
+    { prefix: "Students", options: ["are just passing", "have just passed"], correct: 1, suffix: "their exams and they are happy about it." },
+    { prefix: "How long", options: ["do you have", "have you had"], correct: 1, suffix: "your cat?" }
+  ];
+
+  // ---------- dane: Ex. 3 ----------
+  var EX3 = [
+    { text: "I [gap](make) some sandwiches with chicken and beef. Help yourself if you're hungry.", answers: ["have made"] },
+    { text: "Look! Lucy [gap](buy) some fruit and vegetables.", answers: ["is buying"] },
+    { text: "[gap](you / often / call) your mum?", answers: ["Do you often call"] },
+    { text: "The sun [gap](not / shine). It's quite cloudy and dark.", answers: ["isn't shining"] },
+    { text: "Betty [gap](put on) weight since last summer.", answers: ["has put on"] },
+    { text: "How much money [gap](she / save) every month?", answers: ["does she save"] },
+    { text: "Claire often [gap](listen) to the radio in the morning.", answers: ["listens"] },
+    { text: "I feel relieved because my noisy neighbours [gap](just / move out).", answers: ["have just moved out"] },
+    { text: "Linda [gap](never / do) her homework on Friday.", answers: ["never does"] },
+    { text: "It [gap](already / stop) raining so we can go for a long walk.", answers: ["has already stopped"] },
+    { text: "Rita and Olivia [gap](see) their grandparents once a month.", answers: ["see"] },
+    { text: "Mary [gap](work) for our company for twenty years.", answers: ["has worked"] },
+    { text: "Hurry up! Everybody [gap](wait) for you.", answers: ["is waiting"] },
+    { text: "Our lesson [gap](just / finish). You can go home and chill out.", answers: ["has just finished"] },
+    { text: "I'm sorry but I [gap](not / vacuum) the carpet yet.", answers: ["haven't vacuumed"] },
+    { text: "How much time [gap](it / take) you to go to the swimming pool?", answers: ["does it take"] },
+    { text: "Cindy [gap](wear) a glamorous dress today.", answers: ["is wearing"] },
+    { text: "Our children are quite busy now. Suzy [gap](brush) her teeth while Peter [gap](clean) his shoes.", answers: ["is brushing", "is cleaning"] },
+    { text: "Molly [gap](always / want) to go to Mexico.", answers: ["has always wanted"] },
+    { text: "Lisa and John [gap](go) to the museum tomorrow.", answers: ["are going"] }
+  ];
+
+  // ---------- dane: Ex. 4 ----------
+  var EX4 = [
+    { pl: "Celine uczy się francuskiego każdego dnia.", en: "Celine learns French every day." },
+    { pl: "Możemy wyjść na dwór, bo już nie pada mocno śnieg.", en: "We can go outside because it isn't snowing heavily anymore." },
+    { pl: "Simon jest zakochany w Lucy od 15 lat.", en: "Simon has been in love with Lucy for 15 years." },
+    { pl: "Miranda spadła z roweru i jest w szpitalu.", en: "Miranda has fallen off her bike and is in hospital." },
+    { pl: "Czy Anna lubi tańczyć?", en: "Does Anna like dancing?" },
+    { pl: "Dlaczego rozmawiasz tak głośno przez telefon?", en: "Why are you talking so loudly on the phone?" },
+    { pl: "Jak długo mieszkasz w Wiedniu?", en: "How long have you lived in Vienna?" },
+    { pl: "Popatrz! Dzieci karmią kaczki przy sadzawce.", en: "Look! The children are feeding the ducks by the pond." },
+    { pl: "Czy Peter zazwyczaj gra w szachy ze swoim tatą?", en: "Does Peter usually play chess with his dad?" },
+    { pl: "Lucy ma dzisiaj ubraną kwiecistą sukienkę.", en: "Lucy is wearing a floral dress today." }
+  ];
+
+  // ---------- pomocnicze: HTML ----------
+  function escapeHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function buildGapHTML(text, itemId) {
+    var re = /\[gap\]\(([^)]*)\)/g;
+    var html = "", last = 0, gi = 0, m;
+    while ((m = re.exec(text))) {
+      html += escapeHtml(text.slice(last, m.index));
+      html += '<span class="gapblock"><input type="text" class="gap-input" data-item="' + itemId + '" data-gap="' + gi +
+              '" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="hint">(' + escapeHtml(m[1]) + ')</span></span>';
+      last = re.lastIndex;
+      gi++;
+    }
+    html += escapeHtml(text.slice(last));
+    return html;
+  }
+
+  // ---------- pomocnicze: sprawdzanie odpowiedzi ----------
+  var CONTRACTIONS = [
+    ["don't", "do not"], ["doesn't", "does not"], ["didn't", "did not"],
+    ["isn't", "is not"], ["aren't", "are not"], ["wasn't", "was not"],
+    ["weren't", "were not"], ["haven't", "have not"], ["hasn't", "has not"],
+    ["hadn't", "had not"], ["won't", "will not"], ["can't", "can not"],
+    ["couldn't", "could not"], ["wouldn't", "would not"], ["shouldn't", "should not"],
+    ["mustn't", "must not"], ["shan't", "shall not"]
+  ];
+
+  function norm(raw) {
+    var s = String(raw == null ? "" : raw).toLowerCase();
+    for (var i = 0; i < CONTRACTIONS.length; i++) {
+      s = s.split(CONTRACTIONS[i][0]).join(CONTRACTIONS[i][1]);
+    }
+    s = s.replace(/'m\b/g, " am").replace(/'re\b/g, " are").replace(/'ve\b/g, " have").replace(/'ll\b/g, " will");
+    s = s.replace(/[^a-z0-9 ]/g, " ");
+    s = s.replace(/\s+/g, " ").trim();
+    return s;
+  }
+
+  function levenshtein(a, b) {
+    var m = a.length, n = b.length;
+    if (!m) return n;
+    if (!n) return m;
+    var dp = new Array(n + 1);
+    for (var j = 0; j <= n; j++) dp[j] = j;
+    for (var i = 1; i <= m; i++) {
+      var prev = dp[0];
+      dp[0] = i;
+      for (j = 1; j <= n; j++) {
+        var tmp = dp[j];
+        dp[j] = Math.min(dp[j] + 1, dp[j - 1] + 1, prev + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1));
+        prev = tmp;
+      }
+    }
+    return dp[n];
+  }
+
+  // Odrzuca "prawie trafienia", ktore w rzeczywistosci sa bledem gramatycznym
+  // (brak koncowki -s/-ed/-ing), a nie literowka - to wlasnie ta koncowka jest
+  // celem cwiczenia, wiec nie mozna jej wybaczac jako "drobna literowke".
+  function suffixOnlyDiff(a, b) {
+    var suf = ["ing", "es", "ed", "s", "d"];
+    for (var i = 0; i < suf.length; i++) {
+      if (a + suf[i] === b || b + suf[i] === a) return true;
+    }
+    return false;
+  }
+
+  function isCorrect(userRaw, correctRaw) {
+    var u = norm(userRaw), c = norm(correctRaw);
+    if (!u) return false;
+    if (u === c) return true;
+    if (suffixOnlyDiff(u, c)) return false;
+    var dist = levenshtein(u, c);
+    var len = Math.max(u.length, c.length);
+    var threshold = len <= 5 ? 0 : (len <= 10 ? 1 : 2);
+    return dist <= threshold;
+  }
+
+  // ---------- renderowanie: Ex. 1 / Ex. 3 (luki) ----------
+  var GAP_ANSWERS = {};
+
+  function renderGapExercise(containerId, items, prefix) {
+    var box = document.getElementById(containerId);
+    var html = "";
+    items.forEach(function (it, idx) {
+      var itemId = prefix + "-" + idx;
+      GAP_ANSWERS[itemId] = it.answers;
+      html += '<li class="gap-item" id="' + itemId + '-wrap" data-item="' + itemId + '">' +
+        '<span class="num">' + (idx + 1) + '.</span> <span class="sentence">' + buildGapHTML(it.text, itemId) + '</span>' +
+        ' <button type="button" class="btn-check" data-check="' + itemId + '">Sprawdź</button>' +
+        '<div class="feedback" id="' + itemId + '-fb"></div>' +
+        '</li>';
+    });
+    box.innerHTML = '<ol class="gap-list">' + html + '</ol>';
+  }
+
+  function checkGapItem(itemId) {
+    var answers = GAP_ANSWERS[itemId];
+    var wrap = document.getElementById(itemId + "-wrap");
+    if (!wrap || !answers) return;
+    var inputs = wrap.querySelectorAll(".gap-input");
+    var allOk = true;
+    inputs.forEach(function (inp, gi) {
+      var ok = isCorrect(inp.value, answers[gi]);
+      inp.classList.remove("input-ok", "input-bad");
+      inp.classList.add(ok ? "input-ok" : "input-bad");
+      if (!ok) allOk = false;
+    });
+    var fb = document.getElementById(itemId + "-fb");
+    if (fb) {
+      fb.innerHTML = allOk
+        ? '<span class="fb-ok">✔ Dobrze!</span>'
+        : '<span class="fb-bad">✘ Poprawna forma: <b>' + escapeHtml(answers.join(" / ")) + '</b></span>';
+    }
+    wrap.setAttribute("data-checked", "1");
+    wrap.setAttribute("data-correct", allOk ? "1" : "0");
+    updateScore(wrap.closest(".exercise").id);
+    return allOk;
+  }
+
+  function checkAllInExercise(exId) {
+    document.querySelectorAll("#" + exId + " .gap-item").forEach(function (wrap) {
+      checkGapItem(wrap.getAttribute("data-item"));
+    });
+  }
+
+  function updateScore(exId) {
+    var badge = document.getElementById(exId + "-score");
+    if (!badge) return;
+    var items = document.querySelectorAll("#" + exId + " .gap-item, #" + exId + " .mc-item");
+    var total = items.length, correct = 0;
+    items.forEach(function (it) {
+      if (it.getAttribute("data-checked") === "1" && it.getAttribute("data-correct") === "1") correct++;
+    });
+    badge.textContent = correct + "/" + total + " poprawnych";
+  }
+
+  // ---------- renderowanie: Ex. 2 (multiple choice) ----------
+  var MC_ANSWERS = {};
+
+  function renderMC(containerId, items, prefix) {
+    var box = document.getElementById(containerId);
+    var html = "";
+    items.forEach(function (it, idx) {
+      var itemId = prefix + "-" + idx;
+      MC_ANSWERS[itemId] = it.correct;
+      var opts = it.options.map(function (opt, oi) {
+        return '<button type="button" class="mc-opt" data-item="' + itemId + '" data-opt="' + oi + '">' + escapeHtml(opt) + '</button>';
+      }).join('<span class="hint">/</span>');
+      html += '<li class="mc-item" id="' + itemId + '-wrap" data-item="' + itemId + '">' +
+        '<span class="num">' + (idx + 1) + '.</span> ' +
+        (it.prefix ? '<span class="mc-prefix">' + escapeHtml(it.prefix) + '</span> ' : '') +
+        '<span class="mc-options">' + opts + '</span> ' +
+        '<span class="mc-suffix">' + escapeHtml(it.suffix) + '</span>' +
+        '<div class="feedback" id="' + itemId + '-fb"></div>' +
+        '</li>';
+    });
+    box.innerHTML = '<ol class="mc-list">' + html + '</ol>';
+  }
+
+  function handleMCClick(e) {
+    var btn = e.target.closest(".mc-opt");
+    if (!btn) return;
+    var itemId = btn.getAttribute("data-item");
+    var wrap = document.getElementById(itemId + "-wrap");
+    if (!wrap || wrap.getAttribute("data-checked") === "1") return;
+    var chosen = parseInt(btn.getAttribute("data-opt"), 10);
+    var correct = MC_ANSWERS[itemId];
+    wrap.querySelectorAll(".mc-opt").forEach(function (b) {
+      b.classList.add("mc-disabled");
+      if (parseInt(b.getAttribute("data-opt"), 10) === correct) b.classList.add("mc-correct");
+    });
+    if (chosen !== correct) btn.classList.add("mc-wrong");
+    wrap.setAttribute("data-checked", "1");
+    wrap.setAttribute("data-correct", chosen === correct ? "1" : "0");
+    var fb = document.getElementById(itemId + "-fb");
+    if (fb) fb.innerHTML = chosen === correct ? '<span class="fb-ok">✔ Dobrze!</span>' : "";
+    updateScore("ex2");
+  }
+
+  // ---------- renderowanie: Ex. 4 (tlumaczenia) ----------
+  function renderEx4(containerId, items, prefix) {
+    var box = document.getElementById(containerId);
+    var html = "";
+    items.forEach(function (it, idx) {
+      var itemId = prefix + "-" + idx;
+      html += '<li class="tr-item" id="' + itemId + '-wrap">' +
+        '<span class="num">' + (idx + 1) + '.</span> <span class="pl-text">' + escapeHtml(it.pl) + '</span>' +
+        '<input type="text" class="tr-input" placeholder="Wpisz tłumaczenie po angielsku...">' +
+        '<button type="button" class="btn-check" data-reveal="' + itemId + '">Pokaż tłumaczenie</button>' +
+        '<div class="reveal" id="' + itemId + '-reveal">' +
+        '<span class="model">' + escapeHtml(it.en) + '</span>' +
+        '<span class="caveat">To przykładowa wersja — inne poprawne tłumaczenie też może być OK.</span>' +
+        '</div>' +
+        '</li>';
+    });
+    box.innerHTML = '<ol class="tr-list">' + html + '</ol>';
+  }
+
+  // ---------- inicjalizacja ----------
+  renderGapExercise("ex1-list", EX1, "ex1");
+  renderMC("ex2-list", EX2, "ex2");
+  renderGapExercise("ex3-list", EX3, "ex3");
+  renderEx4("ex4-list", EX4, "ex4");
+
+  document.addEventListener("click", function (e) {
+    var checkBtn = e.target.closest("[data-check]");
+    if (checkBtn) { checkGapItem(checkBtn.getAttribute("data-check")); return; }
+    var checkAllBtn = e.target.closest("[data-checkall]");
+    if (checkAllBtn) { checkAllInExercise(checkAllBtn.getAttribute("data-checkall")); return; }
+    var revealBtn = e.target.closest("[data-reveal]");
+    if (revealBtn) {
+      var id = revealBtn.getAttribute("data-reveal");
+      var box = document.getElementById(id + "-reveal");
+      var shown = box.classList.toggle("shown");
+      revealBtn.textContent = shown ? "Ukryj tłumaczenie" : "Pokaż tłumaczenie";
+      return;
+    }
+    handleMCClick(e);
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter") return;
+    var inp = e.target.closest(".gap-input");
+    if (inp) {
+      e.preventDefault();
+      checkGapItem(inp.getAttribute("data-item"));
+    }
+  });
+})();
+</script>
+</body>
+</html>
