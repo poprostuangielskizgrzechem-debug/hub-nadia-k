@@ -18,6 +18,7 @@
     --red-bg: #fdecec;
   }
   * { box-sizing: border-box; }
+  .hidden { display: none !important; }
   body {
     margin: 0;
     background: var(--paper);
@@ -92,6 +93,19 @@
   .reveal .model { font-weight: 600; color: var(--blue); }
   .reveal .caveat { display: block; margin-top: 4px; color: var(--muted); font-size: 0.82rem; }
   footer.done { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 10px; }
+  .action-bar { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 16px 0 4px; }
+  .btn-action {
+    border: 1.5px solid var(--line); background: #fff; color: var(--ink);
+    border-radius: 999px; padding: 7px 16px; font-size: 0.88rem; font-weight: 600;
+    cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    font-family: inherit;
+  }
+  .btn-action:hover { border-color: var(--blue); }
+  .share-panel { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 12px 0 20px; }
+  .share-panel.hidden { display: none; }
+  .btn-wa { background: #25d366; border-color: #25d366; color: #fff; }
+  .btn-wa:hover { opacity: 0.9; border-color: #25d366; }
+  .share-status { width: 100%; text-align: center; color: var(--muted); font-size: 0.85rem; margin: 2px 0 0; }
   @media (max-width: 480px) {
     .wrap { padding: 16px 12px 40px; }
     input.gap-input { min-width: 90px; }
@@ -105,6 +119,16 @@
     <h1>Present Simple, Present Continuous, Present Perfect</h1>
     <p class="subtitle">Ćwiczenia interaktywne — wpisz odpowiedź i sprawdź od razu</p>
     <p class="intro-note">Wpisuj odpowiedzi w luki i klikaj <b>Sprawdź</b> (albo <b>Sprawdź całe ćwiczenie</b> na dole sekcji). Drobne literówki i wielkość liter nie mają znaczenia, a formy skrócone (np. <i>doesn't</i>) i pełne (<i>does not</i>) są traktowane tak samo.</p>
+    <div class="action-bar">
+      <button type="button" class="btn-action" id="btn-reset">🔄 Resetuj</button>
+      <button type="button" class="btn-action" id="btn-share-toggle">📤 Udostępnij</button>
+    </div>
+    <div class="share-panel hidden" id="share-panel">
+      <a class="btn-action btn-wa" id="share-wa" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
+      <button type="button" class="btn-action hidden" id="share-native">📤 Udostępnij (system)</button>
+      <button type="button" class="btn-action" id="share-copy">🔗 Kopiuj link</button>
+      <p class="share-status" id="share-status"></p>
+    </div>
   </header>
 
   <section class="exercise" id="ex1">
@@ -423,11 +447,78 @@
     box.innerHTML = '<ol class="tr-list">' + html + '</ol>';
   }
 
+  // ---------- reset ----------
+  function resetAll() {
+    if (!window.confirm("Na pewno zresetować wszystkie odpowiedzi w tym ćwiczeniu?")) return;
+    document.querySelectorAll(".gap-input").forEach(function (i) {
+      i.value = ""; i.classList.remove("input-ok", "input-bad");
+    });
+    document.querySelectorAll(".gap-item, .mc-item").forEach(function (w) {
+      w.removeAttribute("data-checked"); w.removeAttribute("data-correct");
+    });
+    document.querySelectorAll(".feedback").forEach(function (f) { f.innerHTML = ""; });
+    document.querySelectorAll(".mc-opt").forEach(function (b) {
+      b.classList.remove("mc-disabled", "mc-correct", "mc-wrong");
+    });
+    document.querySelectorAll(".tr-input").forEach(function (i) { i.value = ""; });
+    document.querySelectorAll(".reveal").forEach(function (r) { r.classList.remove("shown"); });
+    document.querySelectorAll("[data-reveal]").forEach(function (b) { b.textContent = "Pokaż tłumaczenie"; });
+    ["ex1", "ex2", "ex3"].forEach(updateScore);
+  }
+
+  // ---------- udostepnianie ----------
+  function initShare() {
+    var shareUrl = location.href;
+    var shareText = "Present Simple, Present Continuous, Present Perfect – ćwiczenia interaktywne";
+    var waLink = document.getElementById("share-wa");
+    waLink.setAttribute("href", "https://wa.me/?text=" + encodeURIComponent(shareText + "\n" + shareUrl));
+
+    var nativeBtn = document.getElementById("share-native");
+    if (typeof navigator.share === "function") {
+      nativeBtn.classList.remove("hidden");
+      nativeBtn.addEventListener("click", function () {
+        navigator.share({ title: shareText, text: shareText, url: shareUrl }).catch(function () {});
+      });
+    }
+
+    document.getElementById("share-copy").addEventListener("click", function () {
+      var status = document.getElementById("share-status");
+      function ok() { status.textContent = "Link skopiowany!"; }
+      function fail() {
+        var ta = document.createElement("textarea");
+        ta.value = shareUrl;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          status.textContent = "Link skopiowany!";
+        } catch (e) {
+          status.textContent = "Skopiuj ręcznie: " + shareUrl;
+        }
+        document.body.removeChild(ta);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(shareUrl).then(ok).catch(fail);
+      } else {
+        fail();
+      }
+    });
+
+    document.getElementById("btn-share-toggle").addEventListener("click", function () {
+      document.getElementById("share-panel").classList.toggle("hidden");
+    });
+
+    document.getElementById("btn-reset").addEventListener("click", resetAll);
+  }
+
   // ---------- inicjalizacja ----------
   renderGapExercise("ex1-list", EX1, "ex1");
   renderMC("ex2-list", EX2, "ex2");
   renderGapExercise("ex3-list", EX3, "ex3");
   renderEx4("ex4-list", EX4, "ex4");
+  initShare();
 
   document.addEventListener("click", function (e) {
     var checkBtn = e.target.closest("[data-check]");
