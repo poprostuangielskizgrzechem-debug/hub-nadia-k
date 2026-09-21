@@ -101,8 +101,18 @@
     font-family: inherit;
   }
   .btn-action:hover { border-color: var(--blue); }
-  .share-panel { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 12px 0 20px; }
+  .share-panel {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    margin: 12px 0 20px; background: var(--tint); border: 1px solid var(--line);
+    border-radius: 14px; padding: 16px;
+  }
   .share-panel.hidden { display: none; }
+  .share-preview {
+    width: 100%; min-height: 220px; resize: vertical; border: 1.5px solid var(--line);
+    border-radius: 10px; padding: 10px 12px; font-family: inherit; font-size: 0.86rem;
+    background: #fff; color: var(--ink); white-space: pre-wrap;
+  }
+  .share-buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
   .btn-wa { background: #25d366; border-color: #25d366; color: #fff; }
   .btn-wa:hover { opacity: 0.9; border-color: #25d366; }
   .share-status { width: 100%; text-align: center; color: var(--muted); font-size: 0.85rem; margin: 2px 0 0; }
@@ -121,12 +131,15 @@
     <p class="intro-note">Wpisuj odpowiedzi w luki i klikaj <b>Sprawdź</b> (albo <b>Sprawdź całe ćwiczenie</b> na dole sekcji). Drobne literówki i wielkość liter nie mają znaczenia, a formy skrócone (np. <i>doesn't</i>) i pełne (<i>does not</i>) są traktowane tak samo.</p>
     <div class="action-bar">
       <button type="button" class="btn-action" id="btn-reset">🔄 Resetuj</button>
-      <button type="button" class="btn-action" id="btn-share-toggle">📤 Udostępnij</button>
+      <button type="button" class="btn-action" id="btn-share-toggle">📤 Udostępnij wyniki</button>
     </div>
     <div class="share-panel hidden" id="share-panel">
-      <a class="btn-action btn-wa" id="share-wa" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
-      <button type="button" class="btn-action hidden" id="share-native">📤 Udostępnij (system)</button>
-      <button type="button" class="btn-action" id="share-copy">🔗 Kopiuj link</button>
+      <textarea class="share-preview" id="share-preview" readonly></textarea>
+      <div class="share-buttons">
+        <a class="btn-action btn-wa" id="share-wa" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
+        <button type="button" class="btn-action hidden" id="share-native">📤 Udostępnij (system)</button>
+        <button type="button" class="btn-action" id="share-copy">🔗 Kopiuj wyniki</button>
+      </div>
       <p class="share-status" id="share-status"></p>
     </div>
   </header>
@@ -464,50 +477,131 @@
     document.querySelectorAll(".reveal").forEach(function (r) { r.classList.remove("shown"); });
     document.querySelectorAll("[data-reveal]").forEach(function (b) { b.textContent = "Pokaż tłumaczenie"; });
     ["ex1", "ex2", "ex3"].forEach(updateScore);
+    document.getElementById("share-panel").classList.add("hidden");
+    document.getElementById("share-status").textContent = "";
   }
 
-  // ---------- udostepnianie ----------
+  // ---------- podsumowanie wynikow ----------
+  function summarizeGapSection(label, exId, items) {
+    var total = items.length, checked = 0, correct = 0, wrongLines = [];
+    items.forEach(function (it, idx) {
+      var wrap = document.getElementById(exId + "-" + idx + "-wrap");
+      if (!wrap || wrap.getAttribute("data-checked") !== "1") return;
+      checked++;
+      if (wrap.getAttribute("data-correct") === "1") {
+        correct++;
+      } else {
+        var inputs = wrap.querySelectorAll(".gap-input");
+        var userVals = Array.prototype.map.call(inputs, function (i) {
+          return i.value.trim() || "(puste)";
+        }).join(" / ");
+        wrongLines.push((idx + 1) + ". wpisano: \"" + userVals + "\" -> poprawnie: \"" + it.answers.join(" / ") + "\"");
+      }
+    });
+    return { label: label, total: total, checked: checked, correct: correct, wrongLines: wrongLines };
+  }
+
+  function summarizeMCSection() {
+    var total = EX2.length, checked = 0, correct = 0, wrongLines = [];
+    EX2.forEach(function (it, idx) {
+      var wrap = document.getElementById("ex2-" + idx + "-wrap");
+      if (!wrap || wrap.getAttribute("data-checked") !== "1") return;
+      checked++;
+      if (wrap.getAttribute("data-correct") === "1") {
+        correct++;
+      } else {
+        wrongLines.push((idx + 1) + ". poprawna opcja: \"" + it.options[it.correct] + "\"");
+      }
+    });
+    return { label: "Ex. 2", total: total, checked: checked, correct: correct, wrongLines: wrongLines };
+  }
+
+  function summarizeEx4Section() {
+    var filled = 0;
+    EX4.forEach(function (it, idx) {
+      var wrap = document.getElementById("ex4-" + idx + "-wrap");
+      var inp = wrap && wrap.querySelector(".tr-input");
+      if (inp && inp.value.trim()) filled++;
+    });
+    return "Ex. 4 (tłumaczenia, bez automatycznej oceny): " + filled + "/" + EX4.length + " przetłumaczonych zdań.";
+  }
+
+  function formatSection(sec) {
+    var head = sec.label + ": " + sec.correct + "/" + sec.total + " poprawnych";
+    if (sec.checked < sec.total) head += " (sprawdzono " + sec.checked + "/" + sec.total + ")";
+    if (!sec.checked) return head + "\n(brak sprawdzonych odpowiedzi)";
+    if (!sec.wrongLines.length) return head + "\n✅ Brak błędów!";
+    return head + "\nBłędy:\n" + sec.wrongLines.map(function (l) { return "❌ " + l; }).join("\n");
+  }
+
+  function buildResultsSummary() {
+    checkAllInExercise("ex1");
+    checkAllInExercise("ex3");
+    var g1 = summarizeGapSection("Ex. 1", "ex1", EX1);
+    var mc = summarizeMCSection();
+    var g3 = summarizeGapSection("Ex. 3", "ex3", EX3);
+    var totalCorrect = g1.correct + mc.correct + g3.correct;
+    var totalItems = g1.total + mc.total + g3.total;
+    var lines = [];
+    lines.push("📊 Present Simple / Continuous / Perfect – wyniki ćwiczenia");
+    lines.push("Łącznie (Ex. 1–3): " + totalCorrect + "/" + totalItems + " poprawnych");
+    lines.push("");
+    lines.push(formatSection(g1));
+    lines.push("");
+    lines.push(formatSection(mc));
+    lines.push("");
+    lines.push(formatSection(g3));
+    lines.push("");
+    lines.push(summarizeEx4Section());
+    return lines.join("\n");
+  }
+
+  // ---------- udostepnianie wynikow ----------
   function initShare() {
-    var shareUrl = location.href;
-    var shareText = "Present Simple, Present Continuous, Present Perfect – ćwiczenia interaktywne";
-    var waLink = document.getElementById("share-wa");
-    waLink.setAttribute("href", "https://wa.me/?text=" + encodeURIComponent(shareText + "\n" + shareUrl));
+    function refreshPreview() {
+      var summary = buildResultsSummary();
+      document.getElementById("share-preview").value = summary;
+      document.getElementById("share-wa").setAttribute("href", "https://wa.me/?text=" + encodeURIComponent(summary));
+      document.getElementById("share-status").textContent = "";
+      return summary;
+    }
 
     var nativeBtn = document.getElementById("share-native");
     if (typeof navigator.share === "function") {
       nativeBtn.classList.remove("hidden");
       nativeBtn.addEventListener("click", function () {
-        navigator.share({ title: shareText, text: shareText, url: shareUrl }).catch(function () {});
+        var summary = document.getElementById("share-preview").value;
+        navigator.share({ title: "Wyniki ćwiczenia", text: summary }).catch(function () {});
       });
     }
 
     document.getElementById("share-copy").addEventListener("click", function () {
+      var summary = document.getElementById("share-preview").value;
       var status = document.getElementById("share-status");
-      function ok() { status.textContent = "Link skopiowany!"; }
+      function ok() { status.textContent = "Wyniki skopiowane!"; }
       function fail() {
-        var ta = document.createElement("textarea");
-        ta.value = shareUrl;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
+        var ta = document.getElementById("share-preview");
+        ta.focus();
         ta.select();
         try {
           document.execCommand("copy");
-          status.textContent = "Link skopiowany!";
+          status.textContent = "Wyniki skopiowane!";
         } catch (e) {
-          status.textContent = "Skopiuj ręcznie: " + shareUrl;
+          status.textContent = "Zaznacz tekst powyżej i skopiuj ręcznie (Ctrl+C).";
         }
-        document.body.removeChild(ta);
       }
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(shareUrl).then(ok).catch(fail);
+        navigator.clipboard.writeText(summary).then(ok).catch(fail);
       } else {
         fail();
       }
     });
 
     document.getElementById("btn-share-toggle").addEventListener("click", function () {
-      document.getElementById("share-panel").classList.toggle("hidden");
+      var panel = document.getElementById("share-panel");
+      var opening = panel.classList.contains("hidden");
+      if (opening) refreshPreview();
+      panel.classList.toggle("hidden");
     });
 
     document.getElementById("btn-reset").addEventListener("click", resetAll);
