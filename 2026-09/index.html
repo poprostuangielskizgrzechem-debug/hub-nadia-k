@@ -2011,6 +2011,13 @@ video {
       .hub-link-label { font-family:'Plus Jakarta Sans', Arial, sans-serif; font-size:14px; font-weight:700;
                         color:var(--hub-ink); }
       .hub-link-host { font-size:11px; color:var(--hub-muted); display:block; margin-top:1px; word-break:break-all; }
+      .hub-link-group { display:flex; flex-direction:column; gap:0; }
+      .hub-link-group .hub-link-tile { border-radius:12px 12px 0 0; }
+      .hub-link-questions { background:var(--hub-paper); border:1px solid var(--hub-line); border-top:none;
+                             border-radius:0 0 12px 12px; padding:10px 14px 12px; }
+      .hub-link-questions summary { cursor:pointer; font-size:13px; font-weight:700; color:var(--hub-blue); }
+      .hub-link-questions ol { margin:8px 0 0; padding-left:20px; list-style-type:decimal; }
+      .hub-link-questions li { font-size:13.5px; line-height:1.5; color:var(--hub-ink); margin-bottom:5px; }
 
       /* --- wymowa --- */
       .hub-pron { display:flex; align-items:flex-start; gap:14px; border:1px solid var(--hub-line);
@@ -2178,6 +2185,7 @@ video {
             <button type="button" class="hub-nav-btn" data-hub-nav="verbs">&#128260; Czasowniki</button>
             <button type="button" class="hub-nav-btn" data-hub-nav="pronunciation">&#128266; Wymowa</button>
             <button type="button" class="hub-nav-btn" data-hub-nav="writing">&#128214; Teksty</button>
+            <button type="button" class="hub-nav-btn" data-hub-nav="exercises">&#128203; &Cacute;wiczenia</button>
             <button type="button" class="hub-nav-btn" data-hub-nav="sentences">&#9997;&#65039; Zdania</button>
         </nav>
         <!-- === HUB MODULE - END (nav) === -->
@@ -2503,6 +2511,38 @@ video {
             </div>
         </section>
         <!-- === HUB MODULE - END (writing/speaking view) === -->
+        <!-- === HUB MODULE - START (exercises view) === -->
+        <style>
+            .hub-ex-item { margin: 0 0 12px; line-height: 2.1; }
+            .hub-ex-num { font-weight: 700; margin-right: 6px; }
+            .hub-ex-input { border: none; border-bottom: 2px solid #94a3b8; background: transparent; font: inherit; text-align: center; padding: 0 4px; outline: none; }
+            .hub-ex-input:focus { border-bottom-color: #2563eb; }
+            .hub-ex-input.is-ok { border-bottom-color: #16a34a; color: #15803d; }
+            .hub-ex-input.is-bad { border-bottom-color: #dc2626; color: #b91c1c; }
+            .hub-ex-key { color: #15803d; font-size: 0.85em; margin-left: 4px; }
+            .hub-ex-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+            .hub-ex-score { font-weight: 700; }
+        </style>
+        <section id="hub-exercises-view" class="hidden no-print flex-grow flex items-start justify-center relative z-20">
+            <div class="hub-shell">
+                <div class="hub-topbar"></div>
+                <div class="hub-inner">
+
+                    <div class="hub-head">
+                        <h2 class="hub-title">&Cacute;wiczenia</h2>
+                        <p class="hub-tagline">Uzupe&#322;nij luki i sprawd&#378; odpowiedzi.</p>
+                    </div>
+
+                    <div id="hub-exercises-list"></div>
+
+                    <div class="hub-footer">
+                        <button type="button" class="hub-link-btn" data-hub-nav="home">&larr; Powr&oacute;t</button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        <!-- === HUB MODULE - END (exercises view) === -->
         <!-- === HUB MODULE - START (sentences view) === -->
         <section id="hub-sentences-view" class="hidden no-print flex-grow flex items-start justify-center relative z-20">
             <div class="hub-shell">
@@ -2753,17 +2793,20 @@ video {
                                 {
                                         "label": "WSZYSTKIE czasy. Tak, znowu. Ale trochę inaczej | ROCK YOUR ENGLISH #214",
                                         "url": "https://www.youtube.com/watch?v=W7nJSuifQck&t=1409s",
-                                        "type": "youtube"
+                                        "type": "youtube",
+                                        "questions": []
                                 },
                                 {
                                         "label": "Review of all pre-intermediate verb tenses (CEFR A2) - Test-English",
                                         "url": "https://test-english.com/grammar-points/a2/review-verb-tenses-a2/",
-                                        "type": "test"
+                                        "type": "test",
+                                        "questions": []
                                 },
                                 {
                                         "label": "Ćwiczenia interaktywne: Present Simple, Continuous, Perfect",
                                         "url": "https://poprostuangielskizgrzechem-debug.github.io/hub-nadia-k/grammar/present-simple-continuous-perfect.html",
-                                        "type": "quiz"
+                                        "type": "quiz",
+                                        "questions": []
                                 }
                         ]
                 },
@@ -2779,17 +2822,20 @@ video {
                                 {
                                         "label": "Present Perfect 2.0 | ROCK YOUR ENGLISH #209",
                                         "url": "https://www.youtube.com/watch?v=lDDME8dHGrg&t=171s",
-                                        "type": "youtube"
+                                        "type": "youtube",
+                                        "questions": []
                                 },
                                 {
                                         "label": "Present Perfect i Simple Past – ćwiczenia online – Szlifuj swój angielski",
                                         "url": "https://www.ang.pl/cwiczenia/1756/present-perfect-zastosowanie",
-                                        "type": "test"
+                                        "type": "test",
+                                        "questions": []
                                 },
                                 {
                                         "label": "Twój test: Present Simple, Continuous, Perfect (ćwiczenia interaktywne)",
                                         "url": "https://poprostuangielskizgrzechem-debug.github.io/hub-nadia-k/grammar/present-simple-continuous-perfect.html",
-                                        "type": "quiz"
+                                        "type": "quiz",
+                                        "questions": []
                                 }
                         ]
                 }
@@ -2798,6 +2844,7 @@ video {
         "media": [],
         "pronunciation": [],
         "writingSpeaking": [],
+        "exercises": [],
         "distractors": [
                 {
                         "word": "device",
@@ -4350,10 +4397,17 @@ video {
         var HUB = window.HUB_DATA || {};
         var LESSONS = HUB.lessons || [];
         var GRAMMAR = HUB.grammar || [];
+        // Liczba zagadnien, nie wpisow: kilka wpisow pod jednym tematem (pary
+        // blad/poprawka, lista zasad, linki) to jedno zagadnienie. Nowe zaczyna
+        // wpis z tematem albo pierwszy wpis lekcji.
+        var GRAMMAR_TOPICS = GRAMMAR.filter(function (g, i) {
+            return g.topic || i === 0 || GRAMMAR[i - 1].lessonLabel !== g.lessonLabel;
+        }).length;
         var HOMEWORK = HUB.homework || [];
         var MEDIA = HUB.media || [];
         var PRONUNCIATION = HUB.pronunciation || [];
         var WRITING = HUB.writingSpeaking || [];
+        var EXERCISES = HUB.exercises || [];
         // Tryb pliku. "month" to hub miesieczny ucznia (slownictwo z jego lekcji,
         // gramatyka, wymowa, zdania, czasowniki). "unit" to strona jednego dzialu
         // z podrecznika: te same fiszki i ten sam test, tylko karmione slownictwem
@@ -4537,11 +4591,12 @@ video {
             verbs:         'hub-verbs-view',
             pronunciation: 'hub-pronunciation-view',
             writing:       'hub-writing-view',
+            exercises:     'hub-exercises-view',
             sentences:     'hub-sentences-view'
         };
         var ALL_VIEW_IDS = [
             'hub-home-view', 'flashcards-view', 'config-view',
-            'hub-grammar-view', 'hub-media-view', 'hub-pronunciation-view', 'hub-writing-view', 'hub-sentences-view', 'hub-verbs-view',
+            'hub-grammar-view', 'hub-media-view', 'hub-pronunciation-view', 'hub-writing-view', 'hub-exercises-view', 'hub-sentences-view', 'hub-verbs-view',
             'path-selection-view', 'student-start-view', 'quiz-view'
         ];
 
@@ -4644,11 +4699,12 @@ video {
             var tiles = [
                 { key: 'flashcards',    icon: '📒', label: 'Fiszki',    sub: count(vocabCount, 'słówko', 'słówka', 'słówek') + ' do przeklikania', count: vocabCount },
                 { key: 'test',          icon: '📝', label: 'Test',      sub: 'Sprawdź się, możesz też wydrukować', count: vocabCount },
-                { key: 'grammar',       icon: '📚', label: 'Gramatyka', sub: count(GRAMMAR.length, 'zagadnienie', 'zagadnienia', 'zagadnień') + ' z lekcji', count: GRAMMAR.length + HOMEWORK.length },
+                { key: 'grammar',       icon: '📚', label: 'Gramatyka', sub: count(GRAMMAR_TOPICS, 'zagadnienie', 'zagadnienia', 'zagadnień') + ' z lekcji', count: GRAMMAR.length + HOMEWORK.length },
                 { key: 'media',         icon: '🎬', label: 'Artykuły/Wideo', sub: count(MEDIA.length, 'materiał', 'materiały', 'materiałów') + ' do obejrzenia/przeczytania', count: MEDIA.length },
                 { key: 'verbs',         icon: '🔄', label: 'Czasowniki nieregularne', sub: VERB_ROUND_SIZE + ' na rundę z ' + VERB_BANK.length + ' w banku', count: VERB_BANK.length },
                 { key: 'pronunciation', icon: '🔊', label: 'Wymowa',    sub: count(PRONUNCIATION.length, 'słówko', 'słówka', 'słówek') + ' do posłuchania', count: PRONUNCIATION.length },
                 { key: 'writing',       icon: '📖', label: 'Teksty', sub: count(WRITING.length, 'tekst', 'teksty', 'tekstów') + ' do przeczytania/napisania', count: WRITING.length },
+                { key: 'exercises',     icon: '📋', label: 'Ćwiczenia', sub: count(EXERCISES.length, 'ćwiczenie', 'ćwiczenia', 'ćwiczeń') + ' z lukami', count: EXERCISES.length },
                 { key: 'sentences',     icon: '✍️', label: 'Ułóż zdania', sub: count(SENT_COUNT, 'słówko', 'słówka', 'słówek') + ' z puli ' + SENT_POOL.length + ', losowo', count: SENT_POOL.length }
             ];
             // Kafelek czasownikow inaczej wyszedlby na stronie Unitu aktywny, bo
@@ -4724,11 +4780,18 @@ video {
             if (!links || !links.length) return '';
             return '<div class="hub-links">' + links.map(function (lk) {
                 var host = hostOf(lk.url);
-                return '<a class="hub-link-tile" href="' + escapeHtml(lk.url) + '" target="_blank" rel="noopener">' +
+                var tile = '<a class="hub-link-tile" href="' + escapeHtml(lk.url) + '" target="_blank" rel="noopener">' +
                     '<span class="hub-link-icon">' + iconForLink(lk.type, lk.url) + '</span>' +
                     '<span><span class="hub-link-label">' + escapeHtml(lk.label || lk.url) + '</span>' +
                     (host ? '<span class="hub-link-host">' + escapeHtml(host) + '</span>' : '') +
                     '</span></a>';
+                if (lk.questions && lk.questions.length) {
+                    var questions = '<details class="hub-link-questions"><summary>Pytania do rozmowy (' + lk.questions.length + ')</summary>' +
+                        '<ol>' + lk.questions.map(function (q) { return '<li>' + escapeHtml(q) + '</li>'; }).join('') + '</ol>' +
+                        '</details>';
+                    return '<div class="hub-link-group">' + tile + questions + '</div>';
+                }
+                return tile;
             }).join('') + '</div>';
         }
 
@@ -4777,8 +4840,11 @@ video {
                                     return '<li>' + escapeHtml(it) + '</li>';
                                 }).join('') + '</ul>';
                             }
+                            // Temat wpisany tylko w pierwszym wpisie danego zagadnienia,
+                            // kolejne wpisy maja pusty topic i nie powtarzaja naglowka.
+                            var topic = g.topic ? '<p class="hub-gram-topic">' + escapeHtml(g.topic) + '</p>' : '';
                             return '<div class="hub-gram">' +
-                                pair + items +
+                                topic + pair + items +
                                 (g.explanation ? '<p class="hub-gram-expl">' + escapeAndLinkify(g.explanation) + '</p>' : '') +
                                 renderLinks(g.links) +
                                 '</div>';
@@ -4823,7 +4889,7 @@ video {
                 var head = '<p class="hub-section-title' + (gi === 0 ? ' is-first' : '') + '">' +
                     escapeHtml(grp.label) + (grp.dateLabel ? ' &middot; ' + escapeHtml(grp.dateLabel) : '') + '</p>';
                 return head + renderLinks(grp.items.map(function (m) {
-                    return { label: m.label, url: m.url, type: m.type };
+                    return { label: m.label, url: m.url, type: m.type, questions: m.questions };
                 }));
             }).join('');
         }
@@ -5076,6 +5142,95 @@ video {
                 if (meta.offsets[i] <= targetChar) idx = i; else break;
             }
             startWritingPlayback(itemIdx, idx);
+        }
+
+        // Cwiczenia z lukami: text z [gap], answers[i] to string albo lista
+        // akceptowanych odpowiedzi dla i-tej luki. Porownanie bez wielkosci liter,
+        // ze znormalizowanym apostrofem i spacjami.
+        function exNorm(v) {
+            return String(v || '').toLowerCase().replace(/[\u2018\u2019`]/g, "'").replace(/\s+/g, ' ').trim();
+        }
+        function exAccepted(a) { return Array.isArray(a) ? a : [a]; }
+        function renderExercises() {
+            var box = el('hub-exercises-list');
+            if (!box) return;
+            if (!EXERCISES.length) {
+                box.innerHTML = '<p class="hub-empty">Na razie brak &#263;wicze&#324;.</p>';
+                return;
+            }
+            box.innerHTML = EXERCISES.map(function (ex, exIdx) {
+                var body = ex.items.map(function (it, itIdx) {
+                    var parts = it.text.split('[gap]');
+                    var html = parts.map(function (p, i) {
+                        var inp = (i < parts.length - 1)
+                            ? '<input type="text" class="hub-ex-input" size="11" autocomplete="off" autocapitalize="off" spellcheck="false" data-ex="' + exIdx + '" data-it="' + itIdx + '" data-gap="' + i + '">'
+                            : '';
+                        return escapeHtml(p) + inp;
+                    }).join('');
+                    return '<div class="hub-ex-item"><span class="hub-ex-num">' + (itIdx + 1) + '.</span>' + html + '</div>';
+                }).join('');
+                return '<details class="hub-lesson-group" open>' +
+                    '<summary class="hub-section-title' + (exIdx === 0 ? ' is-first' : '') + '">' + escapeHtml(ex.title || '') + '</summary>' +
+                    (ex.instructions ? '<p class="hub-msg-body">' + escapeHtml(ex.instructions) + '</p>' : '') +
+                    body +
+                    '<div class="hub-ex-actions">' +
+                    '<button type="button" class="hub-link-btn" data-ex-check="' + exIdx + '">Sprawd&#378;</button>' +
+                    '<button type="button" class="hub-link-btn" data-ex-show="' + exIdx + '">Poka&#380; odpowiedzi</button>' +
+                    '<button type="button" class="hub-link-btn" data-ex-reset="' + exIdx + '">Wyczy&#347;&#263;</button>' +
+                    '<span class="hub-ex-score" data-ex-score="' + exIdx + '"></span>' +
+                    '</div></details>';
+            }).join('');
+
+            function inputsOf(exIdx) {
+                return Array.prototype.slice.call(box.querySelectorAll('input[data-ex="' + exIdx + '"]'));
+            }
+            function clearKeys(exIdx) {
+                inputsOf(exIdx).forEach(function (inp) {
+                    var k = inp.nextSibling;
+                    if (k && k.className === 'hub-ex-key') k.parentNode.removeChild(k);
+                });
+            }
+            function isOk(inp) {
+                var a = EXERCISES[+inp.getAttribute('data-ex')].items[+inp.getAttribute('data-it')].answers[+inp.getAttribute('data-gap')];
+                return exAccepted(a).some(function (x) { return exNorm(x) === exNorm(inp.value); });
+            }
+            box.addEventListener('input', function (e) {
+                if (e.target && e.target.classList && e.target.classList.contains('hub-ex-input')) {
+                    e.target.classList.remove('is-ok', 'is-bad');
+                }
+            });
+            box.addEventListener('click', function (e) {
+                var t = e.target.closest ? e.target.closest('[data-ex-check],[data-ex-show],[data-ex-reset]') : null;
+                if (!t) return;
+                var exIdx;
+                if (t.hasAttribute('data-ex-check')) {
+                    exIdx = +t.getAttribute('data-ex-check');
+                    var ins = inputsOf(exIdx), ok = 0;
+                    clearKeys(exIdx);
+                    ins.forEach(function (inp) {
+                        var good = isOk(inp);
+                        inp.classList.toggle('is-ok', good);
+                        inp.classList.toggle('is-bad', !good);
+                        if (good) ok++;
+                    });
+                    box.querySelector('[data-ex-score="' + exIdx + '"]').textContent = ok + ' / ' + ins.length;
+                } else if (t.hasAttribute('data-ex-show')) {
+                    exIdx = +t.getAttribute('data-ex-show');
+                    clearKeys(exIdx);
+                    inputsOf(exIdx).forEach(function (inp) {
+                        var a = exAccepted(EXERCISES[exIdx].items[+inp.getAttribute('data-it')].answers[+inp.getAttribute('data-gap')]);
+                        var k = document.createElement('span');
+                        k.className = 'hub-ex-key';
+                        k.textContent = '(' + a[0] + ')';
+                        inp.parentNode.insertBefore(k, inp.nextSibling);
+                    });
+                } else {
+                    exIdx = +t.getAttribute('data-ex-reset');
+                    clearKeys(exIdx);
+                    inputsOf(exIdx).forEach(function (inp) { inp.value = ''; inp.classList.remove('is-ok', 'is-bad'); });
+                    box.querySelector('[data-ex-score="' + exIdx + '"]').textContent = '';
+                }
+            });
         }
 
         function renderWriting() {
@@ -6247,6 +6402,7 @@ video {
                 renderMedia();
                 renderPronunciation();
                 renderWriting();
+                renderExercises();
 
                 loadSentences();
                 renderSentLessonChips();
