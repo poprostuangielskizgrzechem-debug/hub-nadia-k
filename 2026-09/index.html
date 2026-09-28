@@ -2568,6 +2568,7 @@ video {
             .hub-ex-hint { color: var(--hub-muted); font-size: 0.9em; }
             .hub-ex-input { border: 1.5px solid #d6d9df; border-radius: 8px; background: #fff; color: var(--hub-ink); font: inherit;
                 padding: 2px 8px; margin: 0 3px; outline: none; max-width: 100%; box-sizing: border-box; }
+            .hub-ex-item .hub-ex-input { max-width: 12em; }
             .hub-ex-input:focus { border-color: #1e5aae; }
             .hub-ex-input.is-ok { border-color: #1f9254; background: #eafaf0; color: #15803d; }
             .hub-ex-input.is-bad { border-color: #ee4352; background: #fdecec; color: #b91c1c; }
@@ -6129,7 +6130,7 @@ video {
                         // Nawias zaraz po luce to podpowiedz ("(rain)", "(✗ will rain)") -
                         // wyszarzona, zeby nie mieszala sie z trescia zdania.
                         var txt = escapeHtml(p);
-                        if (i > 0) txt = txt.replace(/^(s*)(([^)]*))/, '$1<span class="hub-ex-hint">$2</span>');
+                        if (i > 0) txt = txt.replace(/^(\s*)(\([^)]*\))/, '$1<span class="hub-ex-hint">$2</span>');
                         return txt + (i < parts.length - 1 ? gapHtml(it, itIdx, i) : '');
                     }).join('');
                 }
