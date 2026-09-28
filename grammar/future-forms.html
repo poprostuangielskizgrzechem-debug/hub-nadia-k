@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Future Forms - ćwiczenia</title>
+<style>
+  :root {
+    --accent: #ee4352;
+    --blue:   #1e5aae;
+    --ink:    #16181d;
+    --paper:  #fbfaf8;
+    --tint:   #e9f0fa;
+    --line:   #e8e6e1;
+    --muted:  #67707e;
+    --green:  #1f9254;
+    --green-bg: #eafaf0;
+    --red-bg: #fdecec;
+  }
+  * { box-sizing: border-box; }
+  .hidden { display: none !important; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 24px 18px 60px; }
+  header.top { text-align: center; margin-bottom: 28px; }
+  .topbar { height: 6px; background: linear-gradient(90deg, var(--blue) 0%, var(--accent) 100%); border-radius: 6px; margin-bottom: 20px; }
+  h1 { font-size: 1.5rem; margin: 0 0 6px; }
+  .subtitle { color: var(--muted); font-size: 0.95rem; margin: 0; }
+  .intro-note {
+    background: var(--tint); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 16px; margin-top: 18px; font-size: 0.9rem; color: var(--ink);
+  }
+  section.exercise {
+    background: #fff; border: 1px solid var(--line); border-radius: 16px;
+    padding: 22px 22px 18px; margin-bottom: 26px; box-shadow: 0 6px 20px rgba(22,24,29,.05);
+  }
+  .ex-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+  .ex-head h2 { font-size: 1.15rem; margin: 0; }
+  .score { font-size: 0.85rem; font-weight: 600; color: var(--blue); background: var(--tint); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+  .ex-instructions { color: var(--muted); font-size: 0.9rem; margin: 0 0 14px; }
+  ol.gap-list, ol.mc-list, ol.tr-list { list-style: none; margin: 0; padding: 0; }
+  li.gap-item, li.mc-item, li.tr-item {
+    padding: 12px 0; border-top: 1px solid var(--line);
+  }
+  li.gap-item:first-child, li.mc-item:first-child, li.tr-item:first-child { border-top: none; }
+  .num { color: var(--muted); font-weight: 600; margin-right: 4px; }
+  .sentence { font-size: 1rem; }
+  .gapblock { display: inline-flex; align-items: center; gap: 4px; margin: 0 3px; }
+  input.gap-input {
+    border: 1.5px solid var(--line); border-radius: 8px; padding: 4px 8px;
+    font-size: 0.98rem; font-family: inherit; min-width: 110px;
+    background: #fff; color: var(--ink);
+  }
+  input.gap-input:focus { outline: none; border-color: var(--blue); }
+  input.gap-input.input-ok { border-color: var(--green); background: var(--green-bg); }
+  input.gap-input.input-bad { border-color: var(--accent); background: var(--red-bg); }
+  .hint { color: var(--muted); font-size: 0.88rem; white-space: nowrap; }
+  .btn-check, .btn-checkall, .btn-reveal {
+    border: none; border-radius: 8px; padding: 6px 14px; font-size: 0.88rem;
+    font-weight: 600; cursor: pointer; margin-left: 8px;
+  }
+  .btn-check { background: var(--tint); color: var(--blue); }
+  .btn-check:hover { background: #dcebfa; }
+  .btn-checkall { background: var(--blue); color: #fff; }
+  .btn-checkall:hover { opacity: 0.9; }
+  .feedback { margin-top: 6px; font-size: 0.9rem; min-height: 1.2em; }
+  .fb-ok { color: var(--green); font-weight: 600; }
+  .fb-bad { color: var(--accent); }
+  .ex-footer { display: flex; justify-content: flex-end; margin-top: 14px; }
+  .mc-prefix, .mc-suffix { font-size: 1rem; }
+  .mc-options { display: inline-flex; gap: 8px; margin: 4px 6px; flex-wrap: wrap; }
+  button.mc-opt {
+    border: 1.5px solid var(--line); background: #fff; border-radius: 8px;
+    padding: 5px 12px; font-size: 0.92rem; font-family: inherit; cursor: pointer; color: var(--ink);
+  }
+  button.mc-opt:hover:not(.mc-disabled) { border-color: var(--blue); }
+  button.mc-opt.mc-disabled { cursor: default; }
+  button.mc-opt.mc-correct { border-color: var(--green); background: var(--green-bg); color: var(--green); font-weight: 600; }
+  button.mc-opt.mc-wrong { border-color: var(--accent); background: var(--red-bg); color: var(--accent); text-decoration: line-through; }
+  li.tr-item .pl-text { font-size: 1rem; font-weight: 500; display: block; margin-bottom: 6px; }
+  input.tr-input {
+    width: 100%; border: 1.5px solid var(--line); border-radius: 8px; padding: 7px 10px;
+    font-size: 0.96rem; font-family: inherit; margin-bottom: 6px;
+  }
+  input.tr-input:focus { outline: none; border-color: var(--blue); }
+  .reveal { display: none; background: var(--tint); border-radius: 8px; padding: 8px 12px; font-size: 0.92rem; }
+  .reveal.shown { display: block; }
+  .reveal .model { font-weight: 600; color: var(--blue); }
+  .reveal .caveat { display: block; margin-top: 4px; color: var(--muted); font-size: 0.82rem; }
+  footer.done { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 10px; }
+  .action-bar { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 16px 0 4px; }
+  .btn-action {
+    border: 1.5px solid var(--line); background: #fff; color: var(--ink);
+    border-radius: 999px; padding: 7px 16px; font-size: 0.88rem; font-weight: 600;
+    cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    font-family: inherit;
+  }
+  .btn-action:hover { border-color: var(--blue); }
+  .share-panel {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    margin: 12px 0 20px; background: var(--tint); border: 1px solid var(--line);
+    border-radius: 14px; padding: 16px;
+  }
+  .share-panel.hidden { display: none; }
+  .share-preview {
+    width: 100%; min-height: 220px; resize: vertical; border: 1.5px solid var(--line);
+    border-radius: 10px; padding: 10px 12px; font-family: inherit; font-size: 0.86rem;
+    background: #fff; color: var(--ink); white-space: pre-wrap;
+  }
+  .share-buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .btn-wa { background: #25d366; border-color: #25d366; color: #fff; }
+  .btn-wa:hover { opacity: 0.9; border-color: #25d366; }
+  .share-status { width: 100%; text-align: center; color: var(--muted); font-size: 0.85rem; margin: 2px 0 0; }
+  @media (max-width: 480px) {
+    .wrap { padding: 16px 12px 40px; }
+    input.gap-input { min-width: 90px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="topbar"></div>
+    <h1>Will, be going to, Present Continuous, Present Simple</h1>
+    <p class="subtitle">Ćwiczenia interaktywne - wpisz odpowiedź i sprawdź od razu</p>
+    <p class="intro-note">Wpisuj odpowiedzi w luki i klikaj <b>Sprawdź</b> (albo <b>Sprawdź całe ćwiczenie</b> na dole sekcji). Drobne literówki i wielkość liter nie mają znaczenia, a formy skrócone (np. <i>doesn't</i>) i pełne (<i>does not</i>) są traktowane tak samo.</p>
+    <div class="action-bar">
+      <button type="button" class="btn-action" id="btn-reset">🔄 Resetuj</button>
+      <button type="button" class="btn-action" id="btn-share-toggle">📤 Udostępnij wyniki</button>
+    </div>
+    <div class="share-panel hidden" id="share-panel">
+      <textarea class="share-preview" id="share-preview" readonly></textarea>
+      <div class="share-buttons">
+        <a class="btn-action btn-wa" id="share-wa" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
+        <button type="button" class="btn-action hidden" id="share-native">📤 Udostępnij (system)</button>
+        <button type="button" class="btn-action" id="share-copy">🔗 Kopiuj wyniki</button>
+      </div>
+      <p class="share-status" id="share-status"></p>
+    </div>
+  </header>
+
+  <section class="exercise" id="ex1">
+    <div class="ex-head"><h2>Ex. 1 - uzupełnij lukę</h2><span class="score" id="ex1-score">0/15 poprawnych</span></div>
+    <p class="ex-instructions">Complete the sentences with the correct future form of the verb in brackets: will, be going to, Present Continuous or Present Simple. Gdzie pasują dwie formy, obie są zaliczane.</p>
+    <div id="ex1-list"></div>
+    <div class="ex-footer"><button type="button" class="btn-checkall" data-checkall="ex1">Sprawdź całe ćwiczenie</button></div>
+  </section>
+
+  <section class="exercise" id="ex2">
+    <div class="ex-head"><h2>Ex. 2 - wybierz opcję</h2><span class="score" id="ex2-score">0/12 poprawnych</span></div>
+    <p class="ex-instructions">Choose the correct option. Kliknij jedną z trzech opcji.</p>
+    <div id="ex2-list"></div>
+  </section>
+
+  <section class="exercise" id="ex3">
+    <div class="ex-head"><h2>Ex. 3 - popraw błąd</h2><span class="score" id="ex3-score">0/10 poprawnych</span></div>
+    <p class="ex-instructions">Each sentence has a mistake. W nawiasie jest błędna forma, wpisz w lukę poprawną.</p>
+    <div id="ex3-list"></div>
+    <div class="ex-footer"><button type="button" class="btn-checkall" data-checkall="ex3">Sprawdź całe ćwiczenie</button></div>
+  </section>
+
+  <section class="exercise" id="ex4">
+    <div class="ex-head"><h2>Ex. 4 - tłumaczenie</h2></div>
+    <p class="ex-instructions">Translate the sentences into English, a potem kliknij „Pokaż tłumaczenie", żeby porównać z przykładową wersją (to zadanie nie jest oceniane automatycznie - możliwe są inne poprawne tłumaczenia).</p>
+    <div id="ex4-list"></div>
+  </section>
+
+  <footer class="done">Future Forms - ćwiczenia · dla Nadii K.</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- dane: Ex. 1 ----------
+  var EX1 = [
+    { text: "Look at those black clouds! It [gap](rain).", answers: ["is going to rain"] },
+    { text: "I've already bought the tickets. We [gap](fly) to Madrid on Friday at 6 a.m.", answers: ["are flying|are going to fly"] },
+    { text: "The train [gap](leave) at 7:45 tomorrow morning. That's what the timetable says.", answers: ["leaves"] },
+    { text: "A: I can't open this jar. B: Give it to me, I [gap](help) you.", answers: ["will help"] },
+    { text: "I've decided! I [gap](learn) Spanish next year.", answers: ["am going to learn"] },
+    { text: "A: It's cold in here. B: Wait, I [gap](close) the window.", answers: ["will close"] },
+    { text: "My sister [gap](get) married next Saturday. The wedding is in a small church near Kraków.", answers: ["is getting|is going to get"] },
+    { text: "According to the cinema's website, the film [gap](begin) at 8:15 tonight.", answers: ["begins"] },
+    { text: "Be careful! You [gap](fall) off that ladder!", answers: ["are going to fall"] },
+    { text: "[gap](you / do) anything on Saturday evening? Would you like to come to my party?", answers: ["Are you doing|Are you going to do"] },
+    { text: "I promise I [gap](not / tell) anyone your secret.", answers: ["will not tell"] },
+    { text: "What time [gap](the concert / finish) tonight? I want to check the programme.", answers: ["does the concert finish"] },
+    { text: "Tom has saved enough money. He [gap](buy) a new laptop.", answers: ["is going to buy|is buying"] },
+    { text: "Maybe I [gap](call) you later, but I'm not sure.", answers: ["will call"] },
+    { text: "I [gap](meet) Kasia at 3 p.m. tomorrow. We're having coffee at the new café.", answers: ["am meeting|am going to meet"] }
+  ];
+
+  var EX2 = [
+    { prefix: "Oh no, I've left my wallet at home! Don't worry, I", options: ["'ll lend","am lending","lend"], correct: 0, suffix: "you some money." },
+    { prefix: "Look at that car! It's going too fast. It", options: ["will crash","is going to crash","crashes"], correct: 1, suffix: "into the tree!" },
+    { prefix: "Check the timetable. The bus to Warsaw", options: ["leave","is going to leave","leaves"], correct: 2, suffix: "at 10:30 every morning." },
+    { prefix: "We've booked a table. We", options: ["are having","will have","have"], correct: 0, suffix: "dinner with my parents on Sunday." },
+    { prefix: "A: The phone is ringing! B: OK, I", options: ["am going to answer","'ll answer","answer"], correct: 1, suffix: "it." },
+    { prefix: "I've made up my mind. I", options: ["'ll look","look","'m going to look"], correct: 2, suffix: "for a new job next month." },
+    { prefix: "I promise I", options: ["won't be","am not being","am not"], correct: 0, suffix: "late again." },
+    { prefix: "What", options: ["will you do","are you doing","do you do"], correct: 1, suffix: "this weekend? Have you got any plans?" },
+    { prefix: "I'm hungry. I think I", options: ["am making","make","'ll make"], correct: 2, suffix: "a sandwich." },
+    { prefix: "Kate and Tom", options: ["are getting","will get","get"], correct: 0, suffix: "married next Saturday. They've already sent the invitations." },
+    { prefix: "I'm sure you", options: ["are passing","'ll pass","pass"], correct: 1, suffix: "the exam. You've studied so hard." },
+    { prefix: "The shop", options: ["is closing","close","closes"], correct: 2, suffix: "at 8 p.m. every day." }
+  ];
+
+  var EX3 = [
+    { text: "Look at those clouds! It [gap](will rain) soon.", answers: ["is going to rain"] },
+    { text: "The swimming pool [gap](is opening) at 7 a.m. every day.", answers: ["opens"] },
+    { text: "A: I'm cold. B: I [gap](am closing) the window.", answers: ["will close"] },
+    { text: "I [gap](see) the dentist tomorrow at 10. I've got an appointment.", answers: ["am seeing|am going to see"] },
+    { text: "I promise I [gap](don't forget) your birthday.", answers: ["will not forget"] },
+    { text: "We've decided. We [gap](will move) to Gdańsk next year.", answers: ["are going to move|are moving"] },
+    { text: "[gap](Will you do) anything tonight? Do you want to go to the cinema?", answers: ["Are you doing|Are you going to do"] },
+    { text: "Don't worry about the money. I [gap](am lending) you 50 zł.", answers: ["will lend"] },
+    { text: "I think it [gap](is being) a great party. Everybody is so excited!", answers: ["will be|is going to be"] },
+    { text: "A: Someone's at the door. B: Stay there, I [gap](am going to get) it.", answers: ["will get"] }
+  ];
+
+  var EX4 = [
+    { pl: "Zamierzam kupić nowy samochód w przyszłym roku.", en: "I'm going to buy a new car next year." },
+    { pl: "Jutro o 18:00 spotykam się z Anią.", en: "I'm meeting Ania at 6 p.m. tomorrow." },
+    { pl: "Pociąg odjeżdża o 7:15.", en: "The train leaves at 7:15." },
+    { pl: "Nie sądzę, że on przyjdzie.", en: "I don't think he will come." },
+    { pl: "Pomogę ci z tą walizką.", en: "I'll help you with this suitcase." },
+    { pl: "Spójrz na to niebo! Będzie padać.", en: "Look at the sky! It's going to rain." },
+    { pl: "Co robisz w ten weekend?", en: "What are you doing this weekend?" },
+    { pl: "Obiecuję, że oddam ci pieniądze w piątek.", en: "I promise I'll give you the money back on Friday." },
+    { pl: "Film zaczyna się o 20:00.", en: "The film starts at 8 p.m." },
+    { pl: "Czy zamierzasz pożyczyć pieniądze od brata?", en: "Are you going to borrow money from your brother?" }
+  ];
+
+  // ---------- pomocnicze: HTML ----------
+  function escapeHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function buildGapHTML(text, itemId) {
+    var re = /\[gap\]\(([^)]*)\)/g;
+    var html = "", last = 0, gi = 0, m;
+    while ((m = re.exec(text))) {
+      html += escapeHtml(text.slice(last, m.index));
+      html += '<span class="gapblock"><input type="text" class="gap-input" data-item="' + itemId + '" data-gap="' + gi +
+              '" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="hint">(' + escapeHtml(m[1]) + ')</span></span>';
+      last = re.lastIndex;
+      gi++;
+    }
+    html += escapeHtml(text.slice(last));
+    return html;
+  }
+
+  // ---------- pomocnicze: sprawdzanie odpowiedzi ----------
+  var CONTRACTIONS = [
+    ["don't", "do not"], ["doesn't", "does not"], ["didn't", "did not"],
+    ["isn't", "is not"], ["aren't", "are not"], ["wasn't", "was not"],
+    ["weren't", "were not"], ["haven't", "have not"], ["hasn't", "has not"],
+    ["hadn't", "had not"], ["won't", "will not"], ["can't", "can not"],
+    ["couldn't", "could not"], ["wouldn't", "would not"], ["shouldn't", "should not"],
+    ["mustn't", "must not"], ["shan't", "shall not"]
+  ];
+
+  function norm(raw) {
+    var s = String(raw == null ? "" : raw).toLowerCase();
+    for (var i = 0; i < CONTRACTIONS.length; i++) {
+      s = s.split(CONTRACTIONS[i][0]).join(CONTRACTIONS[i][1]);
+    }
+    s = s.replace(/'m\b/g, " am").replace(/'re\b/g, " are").replace(/'ve\b/g, " have").replace(/'ll\b/g, " will");
+    s = s.replace(/[^a-z0-9 ]/g, " ");
+    s = s.replace(/\s+/g, " ").trim();
+    return s;
+  }
+
+  function levenshtein(a, b) {
+    var m = a.length, n = b.length;
+    if (!m) return n;
+    if (!n) return m;
+    var dp = new Array(n + 1);
+    for (var j = 0; j <= n; j++) dp[j] = j;
+    for (var i = 1; i <= m; i++) {
+      var prev = dp[0];
+      dp[0] = i;
+      for (j = 1; j <= n; j++) {
+        var tmp = dp[j];
+        dp[j] = Math.min(dp[j] + 1, dp[j - 1] + 1, prev + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1));
+        prev = tmp;
+      }
+    }
+    return dp[n];
+  }
+
+  // Odrzuca "prawie trafienia", ktore w rzeczywistosci sa bledem gramatycznym
+  // (brak koncowki -s/-ed/-ing), a nie literowka - to wlasnie ta koncowka jest
+  // celem cwiczenia, wiec nie mozna jej wybaczac jako "drobna literowke".
+  function suffixOnlyDiff(a, b) {
+    var suf = ["ing", "es", "ed", "s", "d"];
+    for (var i = 0; i < suf.length; i++) {
+      if (a + suf[i] === b || b + suf[i] === a) return true;
+    }
+    return false;
+  }
+
+  function isCorrect(userRaw, correctRaw) {
+    var u = norm(userRaw), c = norm(correctRaw);
+    if (!u) return false;
+    if (u === c) return true;
+    if (suffixOnlyDiff(u, c)) return false;
+    var dist = levenshtein(u, c);
+    var len = Math.max(u.length, c.length);
+    var threshold = len <= 5 ? 0 : (len <= 10 ? 1 : 2);
+    return dist <= threshold;
+  }
+
+  // ---------- renderowanie: Ex. 1 / Ex. 3 (luki) ----------
+  var GAP_ANSWERS = {};
+
+  function renderGapExercise(containerId, items, prefix) {
+    var box = document.getElementById(containerId);
+    var html = "";
+    items.forEach(function (it, idx) {
+      var itemId = prefix + "-" + idx;
+      GAP_ANSWERS[itemId] = it.answers;
+      html += '<li class="gap-item" id="' + itemId + '-wrap" data-item="' + itemId + '">' +
+        '<span class="num">' + (idx + 1) + '.</span> <span class="sentence">' + buildGapHTML(it.text, itemId) + '</span>' +
+        ' <button type="button" class="btn-check" data-check="' + itemId + '">Sprawdź</button>' +
+        '<div class="feedback" id="' + itemId + '-fb"></div>' +
+        '</li>';
+    });
+    box.innerHTML = '<ol class="gap-list">' + html + '</ol>';
+  }
+
+  function checkGapItem(itemId) {
+    var answers = GAP_ANSWERS[itemId];
+    var wrap = document.getElementById(itemId + "-wrap");
+    if (!wrap || !answers) return;
+    var inputs = wrap.querySelectorAll(".gap-input");
+    var allOk = true;
+    inputs.forEach(function (inp, gi) {
+      var ok = String(answers[gi]).split("|").some(function (a) { return isCorrect(inp.value, a); });
+      inp.classList.remove("input-ok", "input-bad");
+      inp.classList.add(ok ? "input-ok" : "input-bad");
+      if (!ok) allOk = false;
+    });
+    var fb = document.getElementById(itemId + "-fb");
+    if (fb) {
+      fb.innerHTML = allOk
+        ? '<span class="fb-ok">✔ Dobrze!</span>'
+        : '<span class="fb-bad">✘ Poprawna forma: <b>' + escapeHtml(answers.join(" / ").split("|").join(" albo ")) + '</b></span>';
+    }
+    wrap.setAttribute("data-checked", "1");
+    wrap.setAttribute("data-correct", allOk ? "1" : "0");
+    updateScore(wrap.closest(".exercise").id);
+    return allOk;
+  }
+
+  function checkAllInExercise(exId) {
+    document.querySelectorAll("#" + exId + " .gap-item").forEach(function (wrap) {
+      checkGapItem(wrap.getAttribute("data-item"));
+    });
+  }
+
+  function updateScore(exId) {
+    var badge = document.getElementById(exId + "-score");
+    if (!badge) return;
+    var items = document.querySelectorAll("#" + exId + " .gap-item, #" + exId + " .mc-item");
+    var total = items.length, correct = 0;
+    items.forEach(function (it) {
+      if (it.getAttribute("data-checked") === "1" && it.getAttribute("data-correct") === "1") correct++;
+    });
+    badge.textContent = correct + "/" + total + " poprawnych";
+  }
+
+  // ---------- renderowanie: Ex. 2 (multiple choice) ----------
+  var MC_ANSWERS = {};
+
+  function renderMC(containerId, items, prefix) {
+    var box = document.getElementById(containerId);
+    var html = "";
+    items.forEach(function (it, idx) {
+      var itemId = prefix + "-" + idx;
+      MC_ANSWERS[itemId] = it.correct;
+      var opts = it.options.map(function (opt, oi) {
+        return '<button type="button" class="mc-opt" data-item="' + itemId + '" data-opt="' + oi + '">' + escapeHtml(opt) + '</button>';
+      }).join('<span class="hint">/</span>');
+      html += '<li class="mc-item" id="' + itemId + '-wrap" data-item="' + itemId + '">' +
+        '<span class="num">' + (idx + 1) + '.</span> ' +
+        (it.prefix ? '<span class="mc-prefix">' + escapeHtml(it.prefix) + '</span> ' : '') +
+        '<span class="mc-options">' + opts + '</span> ' +
+        '<span class="mc-suffix">' + escapeHtml(it.suffix) + '</span>' +
+        '<div class="feedback" id="' + itemId + '-fb"></div>' +
+        '</li>';
+    });
+    box.innerHTML = '<ol class="mc-list">' + html + '</ol>';
+  }
+
+  function handleMCClick(e) {
+    var btn = e.target.closest(".mc-opt");
+    if (!btn) return;
+    var itemId = btn.getAttribute("data-item");
+    var wrap = document.getElementById(itemId + "-wrap");
+    if (!wrap || wrap.getAttribute("data-checked") === "1") return;
+    var chosen = parseInt(btn.getAttribute("data-opt"), 10);
+    var correct = MC_ANSWERS[itemId];
+    wrap.querySelectorAll(".mc-opt").forEach(function (b) {
+      b.classList.add("mc-disabled");
+      if (parseInt(b.getAttribute("data-opt"), 10) === correct) b.classList.add("mc-correct");
+    });
+    if (chosen !== correct) btn.classList.add("mc-wrong");
+    wrap.setAttribute("data-checked", "1");
+    wrap.setAttribute("data-correct", chosen === correct ? "1" : "0");
+    var fb = document.getElementById(itemId + "-fb");
+    if (fb) fb.innerHTML = chosen === correct ? '<span class="fb-ok">✔ Dobrze!</span>' : "";
+    updateScore("ex2");
+  }
+
+  // ---------- renderowanie: Ex. 4 (tlumaczenia) ----------
+  function renderEx4(containerId, items, prefix) {
+    var box = document.getElementById(containerId);
+    var html = "";
+    items.forEach(function (it, idx) {
+      var itemId = prefix + "-" + idx;
+      html += '<li class="tr-item" id="' + itemId + '-wrap">' +
+        '<span class="num">' + (idx + 1) + '.</span> <span class="pl-text">' + escapeHtml(it.pl) + '</span>' +
+        '<input type="text" class="tr-input" placeholder="Wpisz tłumaczenie po angielsku...">' +
+        '<button type="button" class="btn-check" data-reveal="' + itemId + '">Pokaż tłumaczenie</button>' +
+        '<div class="reveal" id="' + itemId + '-reveal">' +
+        '<span class="model">' + escapeHtml(it.en) + '</span>' +
+        '<span class="caveat">To przykładowa wersja - inne poprawne tłumaczenie też może być OK.</span>' +
+        '</div>' +
+        '</li>';
+    });
+    box.innerHTML = '<ol class="tr-list">' + html + '</ol>';
+  }
+
+  // ---------- reset ----------
+  function resetAll() {
+    if (!window.confirm("Na pewno zresetować wszystkie odpowiedzi w tym ćwiczeniu?")) return;
+    document.querySelectorAll(".gap-input").forEach(function (i) {
+      i.value = ""; i.classList.remove("input-ok", "input-bad");
+    });
+    document.querySelectorAll(".gap-item, .mc-item").forEach(function (w) {
+      w.removeAttribute("data-checked"); w.removeAttribute("data-correct");
+    });
+    document.querySelectorAll(".feedback").forEach(function (f) { f.innerHTML = ""; });
+    document.querySelectorAll(".mc-opt").forEach(function (b) {
+      b.classList.remove("mc-disabled", "mc-correct", "mc-wrong");
+    });
+    document.querySelectorAll(".tr-input").forEach(function (i) { i.value = ""; });
+    document.querySelectorAll(".reveal").forEach(function (r) { r.classList.remove("shown"); });
+    document.querySelectorAll("[data-reveal]").forEach(function (b) { b.textContent = "Pokaż tłumaczenie"; });
+    ["ex1", "ex2", "ex3"].forEach(updateScore);
+    document.getElementById("share-panel").classList.add("hidden");
+    document.getElementById("share-status").textContent = "";
+  }
+
+  // ---------- podsumowanie wynikow ----------
+  function summarizeGapSection(label, exId, items) {
+    var total = items.length, checked = 0, correct = 0, wrongLines = [];
+    items.forEach(function (it, idx) {
+      var wrap = document.getElementById(exId + "-" + idx + "-wrap");
+      if (!wrap || wrap.getAttribute("data-checked") !== "1") return;
+      checked++;
+      if (wrap.getAttribute("data-correct") === "1") {
+        correct++;
+      } else {
+        var inputs = wrap.querySelectorAll(".gap-input");
+        var userVals = Array.prototype.map.call(inputs, function (i) {
+          return i.value.trim() || "(puste)";
+        }).join(" / ");
+        wrongLines.push((idx + 1) + ". wpisano: \"" + userVals + "\" -> poprawnie: \"" + it.answers.join(" / ").split("|").join(" albo ") + "\"");
+      }
+    });
+    return { label: label, total: total, checked: checked, correct: correct, wrongLines: wrongLines };
+  }
+
+  function summarizeMCSection() {
+    var total = EX2.length, checked = 0, correct = 0, wrongLines = [];
+    EX2.forEach(function (it, idx) {
+      var wrap = document.getElementById("ex2-" + idx + "-wrap");
+      if (!wrap || wrap.getAttribute("data-checked") !== "1") return;
+      checked++;
+      if (wrap.getAttribute("data-correct") === "1") {
+        correct++;
+      } else {
+        wrongLines.push((idx + 1) + ". poprawna opcja: \"" + it.options[it.correct] + "\"");
+      }
+    });
+    return { label: "Ex. 2", total: total, checked: checked, correct: correct, wrongLines: wrongLines };
+  }
+
+  function summarizeEx4Section() {
+    var filled = 0;
+    EX4.forEach(function (it, idx) {
+      var wrap = document.getElementById("ex4-" + idx + "-wrap");
+      var inp = wrap && wrap.querySelector(".tr-input");
+      if (inp && inp.value.trim()) filled++;
+    });
+    return "Ex. 4 (tłumaczenia, bez automatycznej oceny): " + filled + "/" + EX4.length + " przetłumaczonych zdań.";
+  }
+
+  function formatSection(sec) {
+    var head = sec.label + ": " + sec.correct + "/" + sec.total + " poprawnych";
+    if (sec.checked < sec.total) head += " (sprawdzono " + sec.checked + "/" + sec.total + ")";
+    if (!sec.checked) return head + "\n(brak sprawdzonych odpowiedzi)";
+    if (!sec.wrongLines.length) return head + "\n✅ Brak błędów!";
+    return head + "\nBłędy:\n" + sec.wrongLines.map(function (l) { return "❌ " + l; }).join("\n");
+  }
+
+  function buildResultsSummary() {
+    checkAllInExercise("ex1");
+    checkAllInExercise("ex3");
+    var g1 = summarizeGapSection("Ex. 1", "ex1", EX1);
+    var mc = summarizeMCSection();
+    var g3 = summarizeGapSection("Ex. 3", "ex3", EX3);
+    var totalCorrect = g1.correct + mc.correct + g3.correct;
+    var totalItems = g1.total + mc.total + g3.total;
+    var lines = [];
+    lines.push("📊 Future Forms - wyniki ćwiczenia");
+    lines.push("Łącznie (Ex. 1-3): " + totalCorrect + "/" + totalItems + " poprawnych");
+    lines.push("");
+    lines.push(formatSection(g1));
+    lines.push("");
+    lines.push(formatSection(mc));
+    lines.push("");
+    lines.push(formatSection(g3));
+    lines.push("");
+    lines.push(summarizeEx4Section());
+    return lines.join("\n");
+  }
+
+  // ---------- udostepnianie wynikow ----------
+  function initShare() {
+    function refreshPreview() {
+      var summary = buildResultsSummary();
+      document.getElementById("share-preview").value = summary;
+      document.getElementById("share-wa").setAttribute("href", "https://wa.me/?text=" + encodeURIComponent(summary));
+      document.getElementById("share-status").textContent = "";
+      return summary;
+    }
+
+    var nativeBtn = document.getElementById("share-native");
+    if (typeof navigator.share === "function") {
+      nativeBtn.classList.remove("hidden");
+      nativeBtn.addEventListener("click", function () {
+        var summary = document.getElementById("share-preview").value;
+        navigator.share({ title: "Wyniki ćwiczenia", text: summary }).catch(function () {});
+      });
+    }
+
+    document.getElementById("share-copy").addEventListener("click", function () {
+      var summary = document.getElementById("share-preview").value;
+      var status = document.getElementById("share-status");
+      function ok() { status.textContent = "Wyniki skopiowane!"; }
+      function fail() {
+        var ta = document.getElementById("share-preview");
+        ta.focus();
+        ta.select();
+        try {
+          document.execCommand("copy");
+          status.textContent = "Wyniki skopiowane!";
+        } catch (e) {
+          status.textContent = "Zaznacz tekst powyżej i skopiuj ręcznie (Ctrl+C).";
+        }
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(summary).then(ok).catch(fail);
+      } else {
+        fail();
+      }
+    });
+
+    document.getElementById("btn-share-toggle").addEventListener("click", function () {
+      var panel = document.getElementById("share-panel");
+      var opening = panel.classList.contains("hidden");
+      if (opening) refreshPreview();
+      panel.classList.toggle("hidden");
+    });
+
+    document.getElementById("btn-reset").addEventListener("click", resetAll);
+  }
+
+  // ---------- inicjalizacja ----------
+  renderGapExercise("ex1-list", EX1, "ex1");
+  renderMC("ex2-list", EX2, "ex2");
+  renderGapExercise("ex3-list", EX3, "ex3");
+  renderEx4("ex4-list", EX4, "ex4");
+  initShare();
+
+  document.addEventListener("click", function (e) {
+    var checkBtn = e.target.closest("[data-check]");
+    if (checkBtn) { checkGapItem(checkBtn.getAttribute("data-check")); return; }
+    var checkAllBtn = e.target.closest("[data-checkall]");
+    if (checkAllBtn) { checkAllInExercise(checkAllBtn.getAttribute("data-checkall")); return; }
+    var revealBtn = e.target.closest("[data-reveal]");
+    if (revealBtn) {
+      var id = revealBtn.getAttribute("data-reveal");
+      var box = document.getElementById(id + "-reveal");
+      var shown = box.classList.toggle("shown");
+      revealBtn.textContent = shown ? "Ukryj tłumaczenie" : "Pokaż tłumaczenie";
+      return;
+    }
+    handleMCClick(e);
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter") return;
+    var inp = e.target.closest(".gap-input");
+    if (inp) {
+      e.preventDefault();
+      checkGapItem(inp.getAttribute("data-item"));
+    }
+  });
+})();
+</script>
+</body>
+</html>
